@@ -1,0 +1,119 @@
+[uWSGI] getting INI configuration from uwsgi.ini
+*** Starting uWSGI 2.0.31 (64bit) on [Sat Nov  1 19:08:41 2025] ***
+compiled with version: 12.2.0 on 01 November 2025 19:05:17
+os: Linux-6.10.14-linuxkit #1 SMP PREEMPT_DYNAMIC Tue Oct 14 07:34:37 UTC 2025
+nodename: 0bd65f474a69
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 8
+current working directory: /var/www/html/meiduo_mall
+detected binary path: /usr/local/bin/uwsgi
+uWSGI running as root, you can use --uid/--gid/--chroot options
+*** WARNING: you are running uWSGI as root !!! (use the --uid flag) *** 
+chdir() to /var/www/html/meiduo_mall
+your memory page size is 4096 bytes
+ *** WARNING: you have enabled harakiri without post buffering. Slow upload could be rejected on post-unbuffered webservers *** 
+detected max file descriptor number: 1048576
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uwsgi socket 0 bound to TCP address 0.0.0.0:8000 fd 3
+uWSGI running as root, you can use --uid/--gid/--chroot options
+*** WARNING: you are running uWSGI as root !!! (use the --uid flag) *** 
+Python version: 3.8.20 (default, Sep 27 2024, 06:05:08)  [GCC 12.2.0]
+Python main interpreter initialized at 0x55a39569d010
+uWSGI running as root, you can use --uid/--gid/--chroot options
+*** WARNING: you are running uWSGI as root !!! (use the --uid flag) *** 
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 1031270 bytes (1007 KB) for 8 cores
+*** Operational MODE: preforking+threaded ***
+uWSGI running as root, you can use --uid/--gid/--chroot options
+*** WARNING: you are running uWSGI as root !!! (use the --uid flag) *** 
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 15)
+spawned uWSGI worker 1 (pid: 17, cores: 2)
+spawned uWSGI worker 2 (pid: 18, cores: 2)
+spawned uWSGI worker 3 (pid: 19, cores: 2)
+spawned uWSGI worker 4 (pid: 20, cores: 2)
+Traceback (most recent call last):
+  File "/var/www/html/meiduo_mall/./meiduo_mall/wsgi.py", line 16, in <module>
+    application = get_wsgi_application()
+  File "/usr/local/lib/python3.8/site-packages/django/core/wsgi.py", line 12, in get_wsgi_application
+Traceback (most recent call last):
+  File "/var/www/html/meiduo_mall/./meiduo_mall/wsgi.py", line 16, in <module>
+    django.setup(set_prefix=False)
+  File "/usr/local/lib/python3.8/site-packages/django/__init__.py", line 19, in setup
+Traceback (most recent call last):
+  File "/var/www/html/meiduo_mall/./meiduo_mall/wsgi.py", line 16, in <module>
+    configure_logging(settings.LOGGING_CONFIG, settings.LOGGING)
+  File "/usr/local/lib/python3.8/site-packages/django/conf/__init__.py", line 82, in __getattr__
+    application = get_wsgi_application()
+    application = get_wsgi_application()
+    self._setup(name)
+  File "/usr/local/lib/python3.8/site-packages/django/conf/__init__.py", line 69, in _setup
+  File "/usr/local/lib/python3.8/site-packages/django/core/wsgi.py", line 12, in get_wsgi_application
+  File "/usr/local/lib/python3.8/site-packages/django/core/wsgi.py", line 12, in get_wsgi_application
+    self._wrapped = Settings(settings_module)
+  File "/usr/local/lib/python3.8/site-packages/django/conf/__init__.py", line 170, in __init__
+    django.setup(set_prefix=False)
+  File "/usr/local/lib/python3.8/site-packages/django/__init__.py", line 19, in setup
+    django.setup(set_prefix=False)
+  File "/usr/local/lib/python3.8/site-packages/django/__init__.py", line 19, in setup
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/local/lib/python3.8/importlib/__init__.py", line 127, in import_module
+    configure_logging(settings.LOGGING_CONFIG, settings.LOGGING)
+  File "/usr/local/lib/python3.8/site-packages/django/conf/__init__.py", line 82, in __getattr__
+    configure_logging(settings.LOGGING_CONFIG, settings.LOGGING)
+  File "/usr/local/lib/python3.8/site-packages/django/conf/__init__.py", line 82, in __getattr__
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "/var/www/html/meiduo_mall/./meiduo_mall/settings/settings_prod.py", line 9, in <module>
+    self._setup(name)
+  File "/usr/local/lib/python3.8/site-packages/django/conf/__init__.py", line 69, in _setup
+    self._setup(name)
+Traceback (most recent call last):
+    self._wrapped = Settings(settings_module)
+  File "/usr/local/lib/python3.8/site-packages/django/conf/__init__.py", line 170, in __init__
+  File "/usr/local/lib/python3.8/site-packages/django/conf/__init__.py", line 69, in _setup
+    from dotenv import load_dotenv
+ModuleNotFoundError: No module named 'dotenv'
+  File "/var/www/html/meiduo_mall/./meiduo_mall/wsgi.py", line 16, in <module>
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/local/lib/python3.8/importlib/__init__.py", line 127, in import_module
+    self._wrapped = Settings(settings_module)
+  File "/usr/local/lib/python3.8/site-packages/django/conf/__init__.py", line 170, in __init__
+unable to load app 0 (mountpoint='') (callable not found or import error)
+*** no app loaded. going in full dynamic mode ***
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "/var/www/html/meiduo_mall/./meiduo_mall/settings/settings_prod.py", line 9, in <module>
+    application = get_wsgi_application()
+  File "/usr/local/lib/python3.8/site-packages/django/core/wsgi.py", line 12, in get_wsgi_application
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/local/lib/python3.8/importlib/__init__.py", line 127, in import_module
+    django.setup(set_prefix=False)
+  File "/usr/local/lib/python3.8/site-packages/django/__init__.py", line 19, in setup
+    from dotenv import load_dotenv
+ModuleNotFoundError: No module named 'dotenv'
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "/var/www/html/meiduo_mall/./meiduo_mall/settings/settings_prod.py", line 9, in <module>
+    configure_logging(settings.LOGGING_CONFIG, settings.LOGGING)
+  File "/usr/local/lib/python3.8/site-packages/django/conf/__init__.py", line 82, in __getattr__
+unable to load app 0 (mountpoint='') (callable not found or import error)
+*** no app loaded. going in full dynamic mode ***
+    self._setup(name)
+  File "/usr/local/lib/python3.8/site-packages/django/conf/__init__.py", line 69, in _setup
+    from dotenv import load_dotenv
+    self._wrapped = Settings(settings_module)
+  File "/usr/local/lib/python3.8/site-packages/django/conf/__init__.py", line 170, in __init__
+ModuleNotFoundError: No module named 'dotenv'
+unable to load app 0 (mountpoint='') (callable not found or import error)
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/local/lib/python3.8/importlib/__init__.py", line 127, in import_module
+*** no app loaded. going in full dynamic mode ***
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "/var/www/html/meiduo_mall/./meiduo_mall/settings/settings_prod.py", line 9, in <module>
+    from dotenv import load_dotenv
+ModuleNotFoundError: No module named 'dotenv'
+unable to load app 0 (mountpoint='') (callable not found or import error)
+*** no app loaded. going in full dynamic mode ***

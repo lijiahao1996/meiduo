@@ -1,0 +1,125 @@
+# docker-compose.yaml
+
+services:
+  # Django 应用服务
+  meiduo_server:
+    build: ./meiduo_mall
+    image: meiduo_server:latest
+    container_name: meiduo_server
+    env_file: .env        # 从 .env 读取配置
+    restart: always
+    volumes:
+      - ./meiduo_mall:/var/www/html/meiduo_mall
+      - ./logs:/var/log/
+    ports:
+      - "8000:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+      es:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    networks:
+      - meiduo_net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/healthz || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  # Celery 异步任务 worker
+  celery_worker:
+    build: ./meiduo_mall
+    image: celery_worker:latest
+    container_name: meiduo_worker
+    env_file: .env
+    command: celery -A celery_tasks.main worker -l info
+    depends_on:
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    networks:
+      - meiduo_net
+
+  # 前端静态网页服务（Vue 打包后）
+  meiduo_web:
+    build: ./meiduo_mall_frontend
+    container_name: meiduo_web
+    ports:
+      - "8080:80"
+    restart: always
+    depends_on:
+      - meiduo_server
+    networks:
+      - meiduo_net
+    volumes:
+      # 挂载前端静态资源
+      - ./meiduo_mall_frontend/dist:/usr/share/nginx/html:ro
+      # 挂载你本地的 nginx.conf
+      - ./meiduo_mall_frontend/nginx.conf:/etc/nginx/nginx.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost/healthz/ || exit 1"]
+      interval: 30s
+      retries: 3
+
+  # Redis 服务
+  redis:
+    image: redis:4.0
+    container_name: md_redis
+    volumes:
+      - ./redis/data:/data
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      retries: 5
+    networks:
+      - meiduo_net
+
+  # Elasticsearch 服务
+  es:
+    image: delron/elasticsearch-ik:2.4.6-1.0
+    container_name: md_es
+    ports:
+      - "9200:9200"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 30s
+      retries: 5
+    networks:
+      - meiduo_net
+
+  # MySQL 服务
+  mysql:
+    image: mysql:8.0
+    container_name: md_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: meiduo_mall
+      TZ: Asia/Shanghai
+    command: [
+      "--character-set-server=utf8mb4",
+      "--collation-server=utf8mb4_unicode_ci",
+      "--init-connect=SET NAMES utf8mb4",
+      "--skip-character-set-client-handshake"
+    ]
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      retries: 5
+    networks:
+      - meiduo_net
+
+networks:
+  meiduo_net:
+    driver: bridge
+

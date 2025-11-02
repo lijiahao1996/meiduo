@@ -1,0 +1,62 @@
+user root;
+
+worker_processes auto;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+    keepalive_timeout  65;
+
+    client_max_body_size   20m;
+
+    upstream meiduo {
+        server meiduo_server:8000;  # 通过 Docker 网络访问 Django 容器
+    }
+
+    # ✅ 前端 + 健康检查反代
+    server {
+        listen       80;
+        server_name  localhost;
+
+        # 静态页面（Vue 打包结果）
+        location / {
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+            try_files $uri $uri/ /index.html;
+        }
+
+        # ✅ 健康检查接口 —— 反代给 Django (uWSGI)
+        location /healthz/ {
+            include /etc/nginx/uwsgi_params;
+            uwsgi_pass meiduo;
+        }
+
+        # 错误页面
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+    }
+
+    # （可选）后端直连反代块，不影响上面的逻辑
+    server {
+        listen 8000;
+        server_name localhost;
+
+        location / {
+            include /etc/nginx/uwsgi_params;
+            uwsgi_pass meiduo;
+        }
+
+        location /static {
+            alias /usr/share/nginx/html/static;
+        }
+    }
+}
+
