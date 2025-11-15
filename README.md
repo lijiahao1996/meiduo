@@ -31,12 +31,12 @@ docs/images/goods.png
 
 ```mermaid
 graph TD
-    A[用户浏览器] -->|HTTP/HTTPS| B[Nginx (Vue 前端)]
-    B -->|uWSGI| C[Django (后端)]
-    C --> D[(MySQL)]
-    C --> E[(Redis)]
-    C --> F[(Elasticsearch)]
-    C --> G[Celery Worker]
+    A["用户浏览器"] -->|"HTTP/HTTPS"| B["Nginx 前端"]
+    B -->|"uWSGI"| C["Django 后端"]
+    C --> D["MySQL 数据库"]
+    C --> E["Redis 缓存"]
+    C --> F["Elasticsearch 搜索"]
+    C --> G["Celery Worker"]
 ```
 
 ---
