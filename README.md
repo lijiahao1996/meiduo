@@ -1,173 +1,195 @@
-# 🛍️ Meiduo Mall 美多商城
+# 🛍️ Meiduo Mall 美多商城（Django + Vue 全容器化电商项目）
 
-> **全容器化电商项目模板**  
-> 基于 **Django + Vue** 前后端分离架构，使用 Docker 一键部署，涵盖完整商城业务模块。
+![CI](https://github.com/lijiahao1996/meiduo/actions/workflows/ci.yml/badge.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Docker](https://img.shields.io/badge/Docker-Enabled-blue?logo=docker)
+![Python](https://img.shields.io/badge/Python-3.11-blue.svg?logo=python)
+![Vue](https://img.shields.io/badge/Vue-2.x-brightgreen.svg?logo=vue.js)
+
+全容器化的 Django + Vue 电商项目模板，支持 Docker Compose、uWSGI、Nginx、Celery、Redis、MySQL、Elasticsearch，并内置 GitHub Actions CI/CD。
 
 ---
 
-## 📸 首页预览
+# 📸 示例截图
 
-（此处可放置一张 `meiduo_index.png` 截图）
+请将你的截图放在：
+
+```
+docs/images/home.png  
+docs/images/goods.png  
+```
+
+示例布局：
+
+首页 | 商品详情
+---- | ----
+![](docs/images/home.png) | ![](docs/images/goods.png)
 
 ---
 
-## 🧩 技术架构
+# 🧩 技术架构
 
 ```mermaid
 graph TD
     A[用户浏览器] -->|HTTP/HTTPS| B[Nginx (Vue 前端)]
-    B -->|uWSGI Socket| C[Django (后端应用)]
-    C --> D[(MySQL 数据库)]
-    C --> E[(Redis 缓存)]
-    C --> F[(Elasticsearch 搜索)]
-    C --> G[Celery Worker 异步任务]
+    B -->|uWSGI| C[Django (后端)]
+    C --> D[(MySQL)]
+    C --> E[(Redis)]
+    C --> F[(Elasticsearch)]
+    C --> G[Celery Worker]
 ```
-
-### 核心组件
-
-| 组件 | 作用 | 备注 |
-|------|------|------|
-| Django | 后端主框架 | 使用 uWSGI 部署 |
-| Vue.js | 前端渲染 | 打包后由 Nginx 提供 |
-| uWSGI | WSGI 网关 | 负责 Django 请求调度 |
-| Nginx | 静态资源 & 反向代理 | 代理请求到 Django |
-| Celery | 异步任务队列 | 基于 Redis broker |
-| Redis | 缓存、消息队列 | 提高响应性能 |
-| MySQL | 主数据存储 | 读写分离可扩展 |
-| Elasticsearch | 商品搜索引擎 | 基于 IK 分词器 |
 
 ---
 
-## 🐳 Docker 部署
+# 🚀 功能模块概览
 
-### 1️⃣ 构建与启动
+## 电商业务
+
+- 用户系统：注册、登录、邮箱验证  
+- 商品分类、SPU、SKU  
+- 商品详情页 + 规格切换  
+- 购物车（本地存储 + Redis）  
+- 订单系统：结算 → 提交 → 回显  
+- 支付流程示例（支付宝）  
+- 搜索功能（Elasticsearch + drf-haystack）
+
+## 工程能力
+
+- 完整 Docker Compose 部署  
+- uWSGI + Nginx 生产模式  
+- Celery 异步任务  
+- 健康检查 `/healthz/`  
+- GitHub Actions 全自动 CI/CD（测试 + 构建镜像）
+
+---
+
+# 🐳 Docker 一键部署
+
+运行：
 
 ```bash
 bash rebuild_clean.sh
 ```
 
-该脚本自动完成以下步骤：
+脚本内容：
 
-1. 清理旧容器、镜像、卷；
-2. 重新构建所有服务；
-3. 启动 MySQL / Redis / ES；
-4. 自动执行数据库迁移与静态文件收集；
-5. 进行健康检查。
+- 停止旧容器  
+- 清理 data 挂载数据  
+- 重建镜像  
+- 启动 MySQL / Redis / ES / Django / Vue  
+- Django 自动 migrate + collectstatic  
+- 健康检查前后端状态  
 
-运行结束后，输出类似：
+完毕后访问：
 
 ```
-✅ 部署完成并验证通过！
-🧠 管理后台: http://localhost/admin/
-📜 查看日志: docker compose logs -f
-```
-
----
-
-### 2️⃣ 服务端口
-
-| 服务 | 容器 | 本地端口 | 说明 |
-|------|------|-----------|------|
-| 前端 (Nginx) | meiduo_web | `8080` | 访问前端页面 |
-| 后端 (Django) | meiduo_server | `8000` | uWSGI 服务 |
-| Redis | md_redis | `6379` | 缓存与 Celery Broker |
-| MySQL | md_mysql | `3306` | 主数据库 |
-| Elasticsearch | md_es | `9200` | 搜索引擎接口 |
-
----
-
-### 3️⃣ 健康检查
-
-```bash
-# 检查后端健康状态
-curl -fsS http://localhost:8000/healthz/
-
-# 检查 Nginx 反向代理链路
-docker exec -it meiduo_web bash -c "curl -fsS http://127.0.0.1/healthz/"
-```
-
-返回：
-```json
-{"status": "ok"}
+前端：http://localhost:8080
+后端：http://localhost:8000
 ```
 
 ---
 
-## 🧱 项目结构
+# 🧪 GitHub Actions（CI/CD）
+
+CI 文件：
+
+```
+.github/workflows/ci.yml
+```
+
+自动执行：
+
+- Django 单元测试  
+- MySQL + Redis 服务启动  
+- Docker 镜像构建  
+- 推送到 GHCR（GitHub Container Registry）
+
+CI 状态页：
+https://github.com/lijiahao1996/meiduo/actions
+
+---
+
+# 📂 项目结构
 
 ```bash
 meiduo/
-├── meiduo_mall/                 # Django 项目目录
-│   ├── meiduo_mall/             # 主配置 (settings, urls, wsgi)
-│   ├── apps/                    # 各业务模块：users, goods, orders 等
-│   ├── celery_tasks/            # 异步任务
-│   ├── uwsgi.ini                # uWSGI 配置
-│   └── start.sh                 # 启动脚本
-├── meiduo_mall_frontend/        # Vue 打包后的前端代码
-│   ├── dist/                    # 前端静态资源
-│   └── nginx.conf               # Nginx 配置
-├── docker-compose.yaml          # 容器编排配置
-├── rebuild_clean.sh             # 一键清理 + 部署脚本
-├── logs/                        # 挂载日志目录
-└── README.md                    # 项目说明
+├── docker/                   # Docker 构建资源
+├── docker-compose.yaml       # 服务编排
+│
+├── meiduo_mall/              # Django 后端
+│   ├── apps/                 # 用户、商品、订单等模块
+│   ├── celery_tasks/         # 异步任务
+│   ├── settings/             # dev / prod 配置
+│   ├── utils/                # 工具库
+│   ├── Dockerfile            # 后端镜像构建
+│   └── uwsgi.ini             # uWSGI 配置
+│
+├── meiduo_mall_frontend/     # Vue 前端
+│   ├── src/                  # 前端业务代码
+│   ├── public/               # 模板
+│   ├── nginx.conf            # 前端 Nginx 配置
+│   └── Dockerfile            # 前端镜像构建
+│
+├── rebuild_clean.sh          # 一键部署脚本
+├── Jenkinsfile               # CI/CD（可选）
+├── LICENSE                   # MIT 协议
+└── README.md
 ```
 
 ---
 
-## 🔐 HTTPS 证书示例
+# 🧱 常见问题 FAQ
 
-为了模拟生产环境 HTTPS，可添加示例证书：
+### ⚠️ 后端 unhealthy？
+检查 uWSGI 日志：
 
 ```
-certs/
-├── meiduo.site.crt
-├── meiduo.site.key
-└── nginx.conf （示例启用 HTTPS）
+daemonize = /dev/stdout
 ```
 
-Nginx 配置参考：
+### ⚠️ Elasticsearch 无搜索结果？
+执行：
 
-```nginx
-server {
-    listen 443 ssl;
-    server_name www.meiduo.site;
+```bash
+docker exec meiduo_server python manage.py rebuild_index
+```
 
-    ssl_certificate /etc/nginx/ssl/meiduo.site.crt;
-    ssl_certificate_key /etc/nginx/ssl/meiduo.site.key;
-
-    location / {
-        root /usr/share/nginx/html;
-        index index.html;
-    }
-}
-
+### ⚠️ Vue 页面空白？
+```bash
+cd meiduo_mall_frontend
+npm install
+npm run build
+```
 
 ---
 
-## 🧠 常见问题
+# 🙌 Contributing
 
-| 问题 | 解决方案 |
-|------|-----------|
-| `meiduo_server` unhealthy | 确保 `/var/log/uwsgi.log` 存在或改为 `/dev/stdout` |
-| Vue 页面空白 | 重新执行 `npm run build` 并更新 `dist/` |
-| 数据库连接超时 | 检查 `.env` 配置与 MySQL 容器健康状态 |
-| ES 搜索无结果 | 重新执行索引同步命令 `python manage.py rebuild_index` |
+欢迎提交 Issue / PR。
+
+新功能请创建新分支：
+
+```bash
+git checkout -b feature/xxx
+```
 
 ---
 
-## 📜 License
+# ⭐ Star 历史
 
-本项目基于 **MIT License** 开源，可自由用于学习与二次开发。
+[![Star History Chart](https://api.star-history.com/svg?repos=lijiahao1996/meiduo&type=Timeline)](https://star-history.com/#lijiahao1996/meiduo)
 
-```
+---
+
+# 📜 License
+
 MIT License  
-Copyright (c) 2025 Li Jiahao
-```
+详见 `LICENSE` 文件。
 
 ---
 
-## ✨ Maintainer
+# 👤 Maintainer
 
-👤 **Howell (Li Jiahao)**  
-🌐 [GitHub](https://github.com/lijiahao1996)
+**Howell (Li Jiahao)**  
+GitHub: https://github.com/lijiahao1996
 

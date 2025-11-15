@@ -13,7 +13,6 @@ from dotenv import load_dotenv
 # ----------------------------------------------------------------------
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-#load_dotenv(os.path.join(BASE_DIR, '..', '..', '.env'))  # meiduo/.env
 dotenv_path = BASE_DIR.parent / '.env'  #  指向 /var/www/html/meiduo_mall/.env
 load_dotenv(dotenv_path)
 
@@ -301,6 +300,8 @@ HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 # 日志配置（文件 + 控制台）
 # ----------------------------------------------------------------------
 
+LOG_PATH = '/var/log/meiduo'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -318,7 +319,7 @@ LOGGING = {
         },
         'file': {
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(os.path.dirname(BASE_DIR), 'logs/meiduo_mall.log'),
+            'filename': os.path.join(LOG_PATH, 'meiduo_mall.log'),
             'maxBytes': 20 * 1024 * 1024,
             'backupCount': 10,
             'formatter': 'verbose',
@@ -338,7 +339,7 @@ LOGGING = {
 # 静态文件配置
 # ----------------------------------------------------------------------
 
-STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), 'meiduo_mall_frontend/static')
+STATIC_ROOT = '/var/www/html/static'
 STATIC_URL = '/static/'
 
 # Celery 配置
